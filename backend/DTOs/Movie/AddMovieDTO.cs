@@ -1,5 +1,5 @@
 namespace Kinopoisk.DTOs.Movie;
 
-public class GetMovieDTO {
+public class AddMovieDTO {
     
 }
