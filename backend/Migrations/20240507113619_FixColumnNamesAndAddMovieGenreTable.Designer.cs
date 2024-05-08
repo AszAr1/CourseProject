@@ -3,6 +3,7 @@ using Kinopoisk.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Kinopoisk.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20240507113619_FixColumnNamesAndAddMovieGenreTable")]
+    partial class FixColumnNamesAndAddMovieGenreTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -56,7 +59,7 @@ namespace Kinopoisk.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("genres");
+                    b.ToTable("movie_genres");
                 });
 
             modelBuilder.Entity("Kinopoisk.Models.MovieCountryModel", b =>
@@ -83,32 +86,6 @@ namespace Kinopoisk.Migrations
                     b.HasIndex("MovieId");
 
                     b.ToTable("movies_countries");
-                });
-
-            modelBuilder.Entity("Kinopoisk.Models.MovieGenreModel", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("id");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("GenreId")
-                        .HasColumnType("int")
-                        .HasColumnName("genre_id");
-
-                    b.Property<int>("MovieId")
-                        .HasColumnType("int")
-                        .HasColumnName("movie_id");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("GenreId");
-
-                    b.HasIndex("MovieId");
-
-                    b.ToTable("movies_genres");
                 });
 
             modelBuilder.Entity("Kinopoisk.Models.MovieInfoModel", b =>
@@ -211,25 +188,6 @@ namespace Kinopoisk.Migrations
                         .IsRequired();
 
                     b.Navigation("Country");
-
-                    b.Navigation("Movie");
-                });
-
-            modelBuilder.Entity("Kinopoisk.Models.MovieGenreModel", b =>
-                {
-                    b.HasOne("Kinopoisk.Models.GenreModel", "Genre")
-                        .WithMany()
-                        .HasForeignKey("GenreId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Kinopoisk.Models.MovieModel", "Movie")
-                        .WithMany()
-                        .HasForeignKey("MovieId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Genre");
 
                     b.Navigation("Movie");
                 });

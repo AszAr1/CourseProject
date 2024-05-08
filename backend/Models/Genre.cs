@@ -2,8 +2,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Kinopoisk.Models;
 
-[Table("movie_genres")]
-public class MovieGenreModel {
+[Table("genres")]
+public class GenreModel {
     [Column("id")]
     public int Id { get; set; }
     [Column("name")]
