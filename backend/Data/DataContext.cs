@@ -7,7 +7,8 @@ public class DataContext : DbContext {
     public DbSet<MovieInfoModel> MovieInfos => Set<MovieInfoModel>();
     public DbSet<MovieModel> Movies => Set<MovieModel>();
     public DbSet<CountryModel> Countries => Set<CountryModel>();
-    public DbSet<MovieGenreModel> Genres => Set<MovieGenreModel>();
-    public DbSet<MovieCountryModel> MovieCountries => Set<MovieCountryModel>();
+    public DbSet<GenreModel> Genres => Set<GenreModel>();
+    public DbSet<MovieCountryModel> MoviesCountries => Set<MovieCountryModel>();
+    public DbSet<MovieGenreModel> MoviesGenres => Set<MovieGenreModel>();
 
 }
