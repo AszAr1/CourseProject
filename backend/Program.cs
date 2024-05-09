@@ -9,6 +9,7 @@ global using Kinopoisk.DTOs.Genre;
 global using Kinopoisk.Data;
 global using Kinopoisk.Enums;
 
+using Microsoft.Extensions.FileProviders;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -35,6 +36,12 @@ if (app.Environment.IsDevelopment()) {
 }
 
 app.UseHttpsRedirection();
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(
+           Path.Combine(builder.Environment.ContentRootPath, "assets")),
+    RequestPath = "/assets"
+});
 
 app.MapControllers();
 

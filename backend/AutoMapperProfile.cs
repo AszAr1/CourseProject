@@ -7,7 +7,9 @@ public class AutoMapperProfile : Profile {
         CreateMap<MovieModel, GetMovieDTO>();
         CreateMap<CreateMovieDTO, MovieModel>();
         CreateMap<UpdateMovieDTO, MovieModel>();
+
         CreateMap<CreateMovieInfoDTO, MovieInfoModel>();
+        CreateMap<MovieInfoModel, GetMovieInfoDTO>();
 
         CreateMap<CountryDTO, CountryModel>();
         CreateMap<CountryModel, CountryDTO>();
