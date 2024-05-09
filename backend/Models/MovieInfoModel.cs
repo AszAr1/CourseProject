@@ -8,9 +8,6 @@ public class MovieInfoModel {
     [Column("id")]
     public Guid Id { get; set; } = Guid.NewGuid();
 
-    [Column("kinopoisk_id")]
-    public int KinopoiskId { get; set; }
-    
     [Column("name_ru")]
     public string NameRu { get; set; } = "";
     
@@ -26,7 +23,7 @@ public class MovieInfoModel {
     [Column("description")]
     public string Description { get; set; } = "";
     
-    [Column("rating_kinopoisk")]
+    [Column("rating")]
     public double Rating { get; set; }
     
     [Column("poster_url")]
