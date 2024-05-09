@@ -6,16 +6,16 @@ namespace Kinopoisk.Models;
 [Table("movies_countries")]
 public class MovieCountryModel {
     [Column("id")]
-    public int Id { get; set; }
+    public Guid Id { get; set; } = Guid.NewGuid();
 
-    [Column("movie_id")]
-    [ForeignKey("MovieId")]
-    public int MovieId { get; set; }
+    [Column("movie_info_id")]
+    [ForeignKey("MovieInfoId")]
+    public Guid MovieInfoId { get; set; }
 
     [Column("country_id")]
     [ForeignKey("CountryId")]
-    public int CountryId { get; set; }
+    public Guid CountryId { get; set; }
     
-    public MovieModel? Movie { get; set; }
+    public MovieInfoModel? MovieInfo { get; set; }
     public CountryModel? Country { get; set; }
 }

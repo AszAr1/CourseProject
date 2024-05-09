@@ -6,7 +6,7 @@ namespace Kinopoisk.Models;
 [Table("movie_infos")]
 public class MovieInfoModel {
     [Column("id")]
-    public int Id { get; set; }
+    public Guid Id { get; set; } = Guid.NewGuid();
 
     [Column("kinopoisk_id")]
     public int KinopoiskId { get; set; }
@@ -34,6 +34,4 @@ public class MovieInfoModel {
     
     [Column("poster_url_preview")]
     public string PosterUrlPreview { get; set; } = "";
-    
-    public MovieModel? Movie { get; set; }
 }

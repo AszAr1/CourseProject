@@ -5,7 +5,7 @@ namespace Kinopoisk.Models;
 [Table("countries")]
 public class CountryModel {
     [Column("id")]
-    public int Id { get; set; }
+    public Guid Id { get; set; } = Guid.NewGuid();
     [Column("name")]
     public string Name { get; set; } = "";
 }
