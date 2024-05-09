@@ -4,8 +4,8 @@ namespace Kinopoisk.Services.Country;
 
 public interface ICountryService {
     Task<List<CountryDTO>> GetCountries();
-    Task<CountryDTO> GetCountry(int id);
+    Task<CountryDTO> GetCountry(string name);
     Task<CountryDTO> AddCountry(CountryDTO countryDTO);
     Task<CountryDTO> UpdateCountry(CountryDTO countryDTO);
-    Task<Hashtable> DeleteCountry(int id);
+    Task<Hashtable> DeleteCountry(string name);
 }

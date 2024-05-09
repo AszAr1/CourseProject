@@ -18,9 +18,14 @@ public class CountryService : ICountryService {
         return countryDTO;
     }
 
-    public Task<Hashtable> DeleteCountry(int id)
-    {
-        throw new NotImplementedException();
+    public async Task<Hashtable> DeleteCountry(string name) {
+        var countries = await context.Countries.ToListAsync();
+        context.Countries.Remove(countries.Find(c => c.Name == name)!);
+        await context.SaveChangesAsync();
+        return new Hashtable {
+            { "message", $"Movie with name {name} was deleted" },
+            { "status", 200 },
+        };
     }
 
     public async Task<List<CountryDTO>> GetCountries() {
@@ -28,9 +33,9 @@ public class CountryService : ICountryService {
         return countries.Select(mapper.Map<CountryDTO>).ToList();
     }
 
-    public async Task<CountryDTO> GetCountry(int id) {
+    public async Task<CountryDTO> GetCountry(string name) {
         var countries = await context.Countries.ToListAsync();
-        return mapper.Map<CountryDTO>(countries.FirstOrDefault(c => c.Id == id));
+        return mapper.Map<CountryDTO>(countries.FirstOrDefault(c => c.Name == name));
     }
 
     public Task<CountryDTO> UpdateCountry(CountryDTO countryDTO)
