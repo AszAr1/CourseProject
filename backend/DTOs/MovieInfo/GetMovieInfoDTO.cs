@@ -1,7 +1,7 @@
 namespace Kinopoisk.DTOs.MovieInfo;
 
 public class GetMovieInfoDTO {
-    public int FilmId { get; set; }
+    public int KinopoiskId { get; set; }
     public string NameRu { get; set; } = "";
     public string? NameEn { get; set; }
     public MediaType Type { get; set; }

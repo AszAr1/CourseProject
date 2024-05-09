@@ -5,7 +5,7 @@ namespace Kinopoisk.Models;
 [Table("movies")]
 public class MovieModel {
     public static readonly string BASE_PATH = @".\assets\movies";
-    public static readonly string BASE_URI = "http://localhost:5054/movies/get?path=";
+    public static readonly string BASE_URI = "http://localhost:5000/";
     [Column("id")]
     public Guid Id { get; set; } = Guid.NewGuid();
     [Column("name")]

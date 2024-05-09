@@ -10,5 +10,5 @@ public class DataContext : DbContext {
     public DbSet<GenreModel> Genres => Set<GenreModel>();
     public DbSet<MovieCountryModel> MoviesCountries => Set<MovieCountryModel>();
     public DbSet<MovieGenreModel> MoviesGenres => Set<MovieGenreModel>();
-
+    public DbSet<UserModel> Users => Set<UserModel>();
 }
