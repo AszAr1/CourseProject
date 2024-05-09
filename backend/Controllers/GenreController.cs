@@ -14,13 +14,11 @@ public class GenreController : ControllerBase {
     public async Task<ActionResult<List<GenreDTO>>> Index() => 
         Ok(await genreService.GetGenres());
 
-    [HttpGet("{id}")]
-    public async Task<ActionResult<GenreDTO>> Get(int id) => 
-        Ok(await genreService.GetGenre(id));
+    [HttpGet("{name}")]
+    public async Task<ActionResult<GenreDTO>> Get(string name) => 
+        Ok(await genreService.GetGenre(name));
 
     [HttpPost("create")]
     public async Task<ActionResult<GenreDTO>> Create(GenreDTO genreDTO) => 
         Ok(await genreService.AddGenre(genreDTO));
-
-
 }

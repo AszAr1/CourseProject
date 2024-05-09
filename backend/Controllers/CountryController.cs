@@ -14,9 +14,9 @@ public class CountryController : ControllerBase {
     public async Task<ActionResult<List<CountryDTO>>> Index() => 
         Ok(await countryService.GetCountries());
 
-    [HttpGet("{id}")]
-    public async Task<ActionResult<CountryDTO>> Get(int id) => 
-        Ok(await countryService.GetCountry(id));
+    [HttpGet("{name}")]
+    public async Task<ActionResult<CountryDTO>> Get(string name) => 
+        Ok(await countryService.GetCountry(name));
 
     [HttpPost("create")]
     public async Task<ActionResult<CountryDTO>> Create(CountryDTO countryDTO) => 
