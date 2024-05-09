@@ -57,6 +57,7 @@ public class MovieService : IMovieService {
         CreateMovieInfoDTO createMovieInfoDTO = movieData.Films[0];
         
         MovieInfoModel movieInfo = mapper.Map<MovieInfoModel>(createMovieInfoDTO);
+        movieInfo.Movie = movie;
         movie.MovieInfoId = movieInfo.Id;
         movie.MovieInfo = movieInfo;  
         context.MovieInfos.Add(movieInfo);
