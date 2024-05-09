@@ -34,4 +34,5 @@ public class MovieInfoModel {
     
     [Column("poster_url_preview")]
     public string PosterUrlPreview { get; set; } = "";
+    public MovieModel? Movie { get; set;}
 }

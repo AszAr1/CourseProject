@@ -9,11 +9,11 @@ public class MovieGenreModel {
     public Guid Id { get; set; } = Guid.NewGuid();
 
     [Column("movie_info_id")]
-    [ForeignKey("MovieInfoId")]
+    [ForeignKey(nameof(MovieInfo))]
     public Guid MovieInfoId { get; set; }
 
     [Column("genre_id")]
-    [ForeignKey("GenreId")]
+    [ForeignKey(nameof(Genre))]
     public Guid GenreId { get; set; }
 
     public MovieInfoModel? MovieInfo { get; set; }

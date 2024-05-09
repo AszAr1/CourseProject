@@ -13,7 +13,7 @@ public class MovieModel {
     [Column("uri")]
     public string Uri { get; set; } = "";
     [Column("movie_info_id")]
-    [ForeignKey("MovieInfoId")]
+    [ForeignKey(nameof(MovieInfo))]
     public Guid MovieInfoId { get; set; }
     public MovieInfoModel? MovieInfo { get; set; }
 }
