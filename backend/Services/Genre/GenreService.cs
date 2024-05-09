@@ -15,21 +15,26 @@ public class GenreService : IGenreService
     }
     public async Task<GenreDTO> AddGenre(GenreDTO genreDTO)
     {
-        context.Genres.Add(mapper.Map<GenreModel>(genreDTO));
+        GenreModel genre = mapper.Map<GenreModel>(genreDTO);
+        context.Genres.Add(genre);
         await context.SaveChangesAsync();
         return genreDTO;
-
     }
 
-    public async Task<Hashtable> DeleteGenre(int id)
-    {
-        throw new NotImplementedException();
+    public async Task<Hashtable> DeleteGenre(string name) {
+        var genres = await context.Genres.ToListAsync();
+        context.Genres.Remove(genres.Find(c => c.Name == name)!);
+        await context.SaveChangesAsync();
+        return new Hashtable {
+            { "message", $"Movie with name {name} was deleted" },
+            { "status", 200 },
+        };
     }
 
-    public async Task<GenreDTO> GetGenre(int id)
+    public async Task<GenreDTO> GetGenre(string name)
     {
         var genres = await context.Genres.ToListAsync();
-        return mapper.Map<GenreDTO>(genres.FirstOrDefault(c => c.Id == id));
+        return mapper.Map<GenreDTO>(genres.FirstOrDefault(c => c.Name == name));
     }
     public async Task<List<GenreDTO>> GetGenres()
     {
@@ -37,7 +42,7 @@ public class GenreService : IGenreService
         return genres.Select(mapper.Map<GenreDTO>).ToList();
     }
 
-    public async Task<GenreDTO> UpdateGenre(GenreDTO genreDTO)
+    public Task<GenreDTO> UpdateGenre(GenreDTO genreDTO)
     {
         throw new NotImplementedException();
     }
