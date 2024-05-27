@@ -4,6 +4,7 @@ using Kinopoisk.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace backend.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20240527102710_UpdatedUserTable")]
+    partial class UpdatedUserTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -217,18 +220,6 @@ namespace backend.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("users");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("427954ad-7625-45c5-a76e-3b2363cc1fd6"),
-                            Email = "admin@gmail.com",
-                            IsAdmin = true,
-                            IsAuthorized = false,
-                            Password = "Admin",
-                            Username = "Admin",
-                            isActive = true
-                        });
                 });
 
             modelBuilder.Entity("Kinopoisk.Models.MovieCountryModel", b =>
