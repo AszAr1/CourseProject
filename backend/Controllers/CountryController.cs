@@ -6,6 +6,7 @@ namespace Kinopoisk.Controllers;
 [Route("countries")]
 public class CountryController : ControllerBase {
     private readonly ICountryService countryService;
+    
     public CountryController(ICountryService cS) {
         countryService = cS;
     }
@@ -20,5 +21,5 @@ public class CountryController : ControllerBase {
 
     [HttpPost("create")]
     public async Task<ActionResult<CountryDTO>> Create(CountryDTO countryDTO) => 
-        Ok(await countryService.AddCountry(countryDTO));
+        Ok(await countryService.CreateCountry(countryDTO));
 }

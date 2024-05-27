@@ -6,6 +6,7 @@ namespace Kinopoisk.Controllers;
 [Route("genres")]
 public class GenreController : ControllerBase {
     private readonly IGenreService genreService;
+
     public GenreController(IGenreService gS) {
         genreService = gS;
     }
@@ -14,11 +15,12 @@ public class GenreController : ControllerBase {
     public async Task<ActionResult<List<GenreDTO>>> Index() => 
         Ok(await genreService.GetGenres());
 
+
     [HttpGet("{name}")]
     public async Task<ActionResult<GenreDTO>> Get(string name) => 
         Ok(await genreService.GetGenre(name));
 
     [HttpPost("create")]
     public async Task<ActionResult<GenreDTO>> Create(GenreDTO genreDTO) => 
-        Ok(await genreService.AddGenre(genreDTO));
+        Ok(await genreService.CreateGenre(genreDTO));
 }
