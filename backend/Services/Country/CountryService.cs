@@ -11,7 +11,7 @@ public class CountryService : ICountryService {
         mapper = m;
         context = c;
     }
-    public async Task<CountryDTO> AddCountry(CountryDTO countryDTO)
+    public async Task<CountryDTO> CreateCountry(CountryDTO countryDTO)
     {
         context.Countries.Add(mapper.Map<CountryModel>(countryDTO));
         await context.SaveChangesAsync();

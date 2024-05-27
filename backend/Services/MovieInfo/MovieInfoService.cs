@@ -11,7 +11,7 @@ public class MovieInfoService : IMovieInfoService {
         this.context = context;
         this.mapper = mapper;
     }
-    public async Task<GetMovieInfoDTO> AddMovieInfo(CreateMovieInfoDTO createMovieInfoDTO) {
+    public async Task<GetMovieInfoDTO> CreateMovieInfo(CreateMovieInfoDTO createMovieInfoDTO) {
         var movieInfo =  mapper.Map<MovieInfoModel>(createMovieInfoDTO);
         context.MovieInfos.Add(movieInfo);
         await context.SaveChangesAsync();

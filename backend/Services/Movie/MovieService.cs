@@ -16,8 +16,7 @@ public class MovieService : IMovieService {
         context = c;
         configuration = config;
     }
-    public async Task<GetMovieDTO> AddMovie(CreateMovieDTO createMovieDTO)
-    {
+    public async Task<GetMovieDTO> CreateMovie(CreateMovieDTO createMovieDTO) {
         MovieModel movie = mapper.Map<MovieModel>(createMovieDTO);
 
         var movieFile = createMovieDTO.File;
@@ -37,7 +36,7 @@ public class MovieService : IMovieService {
         
         HttpClient client = new HttpClient();
         string url = $"https://kinopoiskapiunofficial.tech/api/v2.1/films/search-by-keyword?keyword={createMovieDTO.Name}&page=1";
-
+        Console.WriteLine($"URL: {url}");
         HttpRequestMessage request = new HttpRequestMessage
         {
             Method = HttpMethod.Get,
@@ -52,14 +51,18 @@ public class MovieService : IMovieService {
         Console.WriteLine(movieData);
 
         if (movieData == null) 
-            throw new NullReferenceException("Counld get movie info");
+            throw new NullReferenceException("Could not get movie info");
 
         CreateMovieInfoDTO createMovieInfoDTO = movieData.Films[0];
-        
+        // System.Console.WriteLine($"RATING: {movieData.Films[0].Rating}");
+        // System.Console.WriteLine($"RATING: {createMovieInfoDTO.Rating}");
         MovieInfoModel movieInfo = mapper.Map<MovieInfoModel>(createMovieInfoDTO);
         movieInfo.Movie = movie;
         movie.MovieInfoId = movieInfo.Id;
         movie.MovieInfo = movieInfo;  
+        // System.Console.WriteLine("---------");
+        // System.Console.WriteLine(movie.MovieInfo);
+        // System.Console.WriteLine("---------");
         context.MovieInfos.Add(movieInfo);
         context.Movies.Add(movie);
 
@@ -118,7 +121,7 @@ public class MovieService : IMovieService {
     }
 
     public async Task<List<GetMovieDTO>> GetMovies() {
-        var movies = await context.Movies.ToListAsync();
+        var movies = await context.Movies.Include(m => m.MovieInfo).ToListAsync();
         return movies.Select(mapper.Map<GetMovieDTO>).ToList();
     }
 
