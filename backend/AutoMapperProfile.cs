@@ -1,6 +1,6 @@
 using AutoMapper;
 
-namespace TestAPI;
+namespace Kinopoisk;
 
 public class AutoMapperProfile : Profile {
     public AutoMapperProfile() {
@@ -16,5 +16,9 @@ public class AutoMapperProfile : Profile {
 
         CreateMap<GenreDTO, GenreModel>();
         CreateMap<GenreModel, GenreDTO>();
+
+        CreateMap<UserModel, GetUserDTO>();
+        CreateMap<UpdateUserDTO, UserModel>();
+        CreateMap<CreateUserDTO, UserModel>();
     }
 }
