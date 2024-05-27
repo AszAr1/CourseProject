@@ -11,4 +11,15 @@ public class DataContext : DbContext {
     public DbSet<MovieCountryModel> MoviesCountries => Set<MovieCountryModel>();
     public DbSet<MovieGenreModel> MoviesGenres => Set<MovieGenreModel>();
     public DbSet<UserModel> Users => Set<UserModel>();
+    protected override void OnModelCreating(ModelBuilder modelBuilder) {
+        modelBuilder.Entity<UserModel>().HasData(
+            new UserModel {
+                Username = "Admin",
+                Email = "admin@gmail.com",
+                Password = "Admin",
+                isActive = true, 
+                IsAdmin = true
+            }
+        );
+    }
 }
