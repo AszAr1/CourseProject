@@ -4,6 +4,7 @@ using Kinopoisk.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace backend.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20240528073822_AddedKinopoiskIdToMovieInfoTable")]
+    partial class AddedKinopoiskIdToMovieInfoTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -29,17 +32,12 @@ namespace backend.Migrations
                         .HasColumnType("char(36)")
                         .HasColumnName("id");
 
-                    b.Property<Guid?>("MovieInfoModelId")
-                        .HasColumnType("char(36)");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("longtext")
                         .HasColumnName("name");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("MovieInfoModelId");
 
                     b.ToTable("countries");
                 });
@@ -51,9 +49,6 @@ namespace backend.Migrations
                         .HasColumnType("char(36)")
                         .HasColumnName("id");
 
-                    b.Property<Guid?>("MovieInfoModelId")
-                        .HasColumnType("char(36)");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("longtext")
@@ -61,13 +56,16 @@ namespace backend.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("MovieInfoModelId");
-
                     b.ToTable("genres");
                 });
 
             modelBuilder.Entity("Kinopoisk.Models.MovieCountryModel", b =>
                 {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)")
+                        .HasColumnName("id");
+
                     b.Property<Guid>("CountryId")
                         .HasColumnType("char(36)")
                         .HasColumnName("country_id");
@@ -75,6 +73,8 @@ namespace backend.Migrations
                     b.Property<Guid>("MovieInfoId")
                         .HasColumnType("char(36)")
                         .HasColumnName("movie_info_id");
+
+                    b.HasKey("Id");
 
                     b.HasIndex("CountryId");
 
@@ -85,6 +85,11 @@ namespace backend.Migrations
 
             modelBuilder.Entity("Kinopoisk.Models.MovieGenreModel", b =>
                 {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)")
+                        .HasColumnName("id");
+
                     b.Property<Guid>("GenreId")
                         .HasColumnType("char(36)")
                         .HasColumnName("genre_id");
@@ -92,6 +97,8 @@ namespace backend.Migrations
                     b.Property<Guid>("MovieInfoId")
                         .HasColumnType("char(36)")
                         .HasColumnName("movie_info_id");
+
+                    b.HasKey("Id");
 
                     b.HasIndex("GenreId");
 
@@ -108,10 +115,11 @@ namespace backend.Migrations
                         .HasColumnName("id");
 
                     b.Property<string>("Description")
+                        .IsRequired()
                         .HasColumnType("longtext")
                         .HasColumnName("description");
 
-                    b.Property<int>("KinopoiskId")
+                    b.Property<int>("FilmId")
                         .HasColumnType("int")
                         .HasColumnName("kinopoisk_id");
 
@@ -119,11 +127,8 @@ namespace backend.Migrations
                         .HasColumnType("longtext")
                         .HasColumnName("name_en");
 
-                    b.Property<string>("NameOriginal")
-                        .HasColumnType("longtext")
-                        .HasColumnName("name_original");
-
                     b.Property<string>("NameRu")
+                        .IsRequired()
                         .HasColumnType("longtext")
                         .HasColumnName("name_ru");
 
@@ -137,13 +142,12 @@ namespace backend.Migrations
                         .HasColumnType("longtext")
                         .HasColumnName("poster_url_preview");
 
-                    b.Property<double?>("RatingKinopoisk")
+                    b.Property<double>("Rating")
                         .HasColumnType("double")
-                        .HasColumnName("rating_kinopoisk");
+                        .HasColumnName("rating");
 
-                    b.Property<string>("Type")
-                        .IsRequired()
-                        .HasColumnType("longtext")
+                    b.Property<int>("Type")
+                        .HasColumnType("int")
                         .HasColumnName("type");
 
                     b.Property<int>("Year")
@@ -221,48 +225,18 @@ namespace backend.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("users");
-                });
 
-            modelBuilder.Entity("WatchedMovieModel", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("char(36)")
-                        .HasColumnName("id");
-
-                    b.Property<Guid>("MovieId")
-                        .HasColumnType("char(36)")
-                        .HasColumnName("movie_id");
-
-                    b.Property<int>("TimeStamp")
-                        .HasColumnType("int")
-                        .HasColumnName("time_stamp");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("char(36)")
-                        .HasColumnName("user_id");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("MovieId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("watched_movies");
-                });
-
-            modelBuilder.Entity("Kinopoisk.Models.CountryModel", b =>
-                {
-                    b.HasOne("Kinopoisk.Models.MovieInfoModel", null)
-                        .WithMany("Countries")
-                        .HasForeignKey("MovieInfoModelId");
-                });
-
-            modelBuilder.Entity("Kinopoisk.Models.GenreModel", b =>
-                {
-                    b.HasOne("Kinopoisk.Models.MovieInfoModel", null)
-                        .WithMany("Genres")
-                        .HasForeignKey("MovieInfoModelId");
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("fb2b5813-3aff-4a0c-9a94-973cac13fa2c"),
+                            Email = "admin@gmail.com",
+                            IsAdmin = true,
+                            IsAuthorized = false,
+                            Password = "Admin",
+                            Username = "Admin",
+                            isActive = true
+                        });
                 });
 
             modelBuilder.Entity("Kinopoisk.Models.MovieCountryModel", b =>
@@ -314,37 +288,9 @@ namespace backend.Migrations
                     b.Navigation("MovieInfo");
                 });
 
-            modelBuilder.Entity("WatchedMovieModel", b =>
-                {
-                    b.HasOne("Kinopoisk.Models.MovieModel", "Movie")
-                        .WithMany()
-                        .HasForeignKey("MovieId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Kinopoisk.Models.UserModel", "User")
-                        .WithMany("watchedMovies")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Movie");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("Kinopoisk.Models.MovieInfoModel", b =>
                 {
-                    b.Navigation("Countries");
-
-                    b.Navigation("Genres");
-
                     b.Navigation("Movie");
-                });
-
-            modelBuilder.Entity("Kinopoisk.Models.UserModel", b =>
-                {
-                    b.Navigation("watchedMovies");
                 });
 #pragma warning restore 612, 618
         }
