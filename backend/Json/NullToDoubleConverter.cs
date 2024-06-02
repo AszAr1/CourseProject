@@ -7,18 +7,17 @@ public class NullToDoubleConverter : JsonConverter
         return objectType == typeof(double);
     }
 
-    public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+    public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
     {
-        double result;
-        string value = ((string)reader.Value!).Replace(".", ",");
-        if (double.TryParse(value, out result)){
-            return result;
-        }
-        return null;
+        if (reader.Value == null) 
+            return null;
+
+        string value = Convert.ToString(reader.Value)!.Replace(".", ",");
+        double.TryParse(value, out var result);
+        return result;
     }
 
-    public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
-    {
-        writer.WriteValue(value.ToString());
+    public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer) {
+        writer.WriteValue(value?.ToString());
     }
 }
