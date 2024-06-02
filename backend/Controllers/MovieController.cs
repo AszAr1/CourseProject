@@ -17,8 +17,7 @@ public class MovieController : ControllerBase {
 
     [HttpGet]
     public async Task<ActionResult<List<GetMovieDTO>>> Index() {
-        try
-        {
+        try {
             return Ok(await movieService.GetMovies());
         }
         catch (ArgumentException ex) {
@@ -31,6 +30,10 @@ public class MovieController : ControllerBase {
         Ok(await movieService.GetMovie(name));
 
     [HttpPost("create")]
-    public async Task<ActionResult<GetMovieDTO>> Create(CreateMovieDTO addMovieDTO) => 
+    public async Task<ActionResult<GetMovieDTO>> Create(CreateUpdateMovieDTO addMovieDTO) => 
         Ok(await movieService.CreateMovie(addMovieDTO));
+
+    [HttpPatch("{name}/edit")]
+    public async Task<ActionResult<GetMovieDTO>> Patch(string name, CreateUpdateMovieDTO createUpdateMovieDTO) => 
+        Ok(await movieService.UpdateMovie(createUpdateMovieDTO));
 }
