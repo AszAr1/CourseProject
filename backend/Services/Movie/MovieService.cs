@@ -10,21 +10,23 @@ public class MovieService : IMovieService {
     private readonly IMapper mapper;
     private readonly DataContext context;
     private readonly IConfiguration configuration;
+    private readonly IMovieInfoService movieInfoService;
 
-    public MovieService(IMapper m, DataContext c, IConfiguration config) {
+    public MovieService(IMapper m, DataContext c, IConfiguration config, IMovieInfoService movieInfoService) {
         mapper = m;
         context = c;
         configuration = config;
+        this.movieInfoService = movieInfoService;
     }
-    public async Task<GetMovieDTO> CreateMovie(CreateMovieDTO createMovieDTO) {
-        MovieModel movie = mapper.Map<MovieModel>(createMovieDTO);
+    public async Task<GetMovieDTO> CreateMovie(CreateUpdateMovieDTO createUpdateMovieDTO) {
+        MovieModel movie = mapper.Map<MovieModel>(createUpdateMovieDTO);
 
-        var movieFile = createMovieDTO.File;
+        var movieFile = createUpdateMovieDTO.File;
 
         if (movieFile == null) 
             throw new ArgumentException("Could get movie file");
 
-        string filePath = Path.Join(MovieModel.BASE_PATH, createMovieDTO.File?.FileName);
+        string filePath = Path.Join(MovieModel.BASE_PATH, createUpdateMovieDTO.File?.FileName);
 
         using (FileStream fileStream = new FileStream(filePath, FileMode.Create)) {
             await movieFile.CopyToAsync(fileStream);
@@ -33,9 +35,12 @@ public class MovieService : IMovieService {
         var fileURI = new Uri(MovieModel.BASE_URI + filePath);
 
         movie.Uri = fileURI.ToString();
+
+        if (createUpdateMovieDTO.Name == null)
+            throw new NullReferenceException("Could not get movie name from CreateUpdateMovieDTO");
         
         HttpClient client = new HttpClient();
-        string url = $"https://kinopoiskapiunofficial.tech/api/v2.1/films/search-by-keyword?keyword={createMovieDTO.Name}&page=1";
+        string url = $"https://kinopoiskapiunofficial.tech/api/v2.1/films/search-by-keyword?keyword={createUpdateMovieDTO.Name}&page=1";
         Console.WriteLine($"URL: {url}");
         HttpRequestMessage request = new HttpRequestMessage
         {
@@ -45,63 +50,28 @@ public class MovieService : IMovieService {
         request.Headers.Add("X-API-KEY", configuration.GetSection("API_KEY").Value);
 
         HttpResponseMessage responseJson = await client.SendAsync(request);
-
+    
         var json = await responseJson.Content.ReadAsStringAsync();
-        var movieData = JsonConvert.DeserializeObject<JsonResponse>(json);
+        var movieData = JsonConvert.DeserializeObject<JsonSearchResponse>(json);
         Console.WriteLine(movieData);
 
         if (movieData == null) 
             throw new NullReferenceException("Could not get movie info");
 
-        CreateMovieInfoDTO createMovieInfoDTO = movieData.Films[0];
-        // System.Console.WriteLine($"RATING: {movieData.Films[0].Rating}");
-        // System.Console.WriteLine($"RATING: {createMovieInfoDTO.Rating}");
-        MovieInfoModel movieInfo = mapper.Map<MovieInfoModel>(createMovieInfoDTO);
+        CreateUpdateMovieInfoDTO createUpdateMovieInfoDTO = movieData.Films[0];
+
+        await movieInfoService.CreateMovieInfo(createUpdateMovieInfoDTO);
+        
+        MovieInfoModel movieInfo = mapper.Map<MovieInfoModel>(createUpdateMovieInfoDTO);
         movieInfo.Movie = movie;
         movie.MovieInfoId = movieInfo.Id;
         movie.MovieInfo = movieInfo;  
-        // System.Console.WriteLine("---------");
-        // System.Console.WriteLine(movie.MovieInfo);
-        // System.Console.WriteLine("---------");
-        context.MovieInfos.Add(movieInfo);
         context.Movies.Add(movie);
-
-        GenreModel? genre;
-        foreach (Dictionary<string, string> keyValuePair in createMovieInfoDTO.Genres)
-        {   
-            genre = context.Genres.FirstOrDefault(g => g.Name == keyValuePair.Values.First());
-            if (genre == null)
-                throw new NullReferenceException($"Unknown genre: {keyValuePair.Values.First()}");
-
-            context.MoviesGenres.Add(new MovieGenreModel{ 
-                Genre = genre, 
-                GenreId = genre.Id, 
-                MovieInfo = movieInfo, 
-                MovieInfoId = movie.Id
-            });
-        }
-        
-        CountryModel? country;
-        foreach (Dictionary<string, string> keyValuePair in createMovieInfoDTO.Countries)
-        {   
-            country = context.Countries.FirstOrDefault(c => c.Name == keyValuePair.Values.First());
-            if (country == null)
-                throw new NullReferenceException($"Unknown country: {keyValuePair.Values.First()}");
-
-            context.MoviesCountries.Add(new MovieCountryModel{ 
-                Country = country, 
-                CountryId = country.Id, 
-                MovieInfo = movieInfo, 
-                MovieInfoId = movie.Id
-            });
-        }
 
         await context.SaveChangesAsync();
         
         return mapper.Map<GetMovieDTO>(
-            context.Movies
-            .Include(movie => movie.MovieInfo)
-            .FirstOrDefault(movie => movie.Name == createMovieDTO.Name)!
+            context.Movies.Include(m => m.MovieInfo).FirstOrDefault(m => m.Name == createUpdateMovieDTO.Name)!
         );
     }
 
@@ -125,8 +95,34 @@ public class MovieService : IMovieService {
         return movies.Select(mapper.Map<GetMovieDTO>).ToList();
     }
 
-    public Task<GetMovieDTO> UpdateMovie(UpdateMovieDTO updateMovieDTO)
-    {
-        throw new NotImplementedException();
+    public async Task<GetMovieDTO> UpdateMovie(CreateUpdateMovieDTO createUpdateMovieDTO) {
+        var movie = await context.Movies
+            .Include(m => m.MovieInfo)
+            .FirstAsync(m => m.Name == createUpdateMovieDTO.Name);
+
+        if (movie == null) {
+            return await CreateMovie(mapper.Map<CreateUpdateMovieDTO>(createUpdateMovieDTO));
+        }
+
+        var movieFile = createUpdateMovieDTO.File;
+
+        if (movieFile == null) 
+            throw new ArgumentException("Could get movie file");
+
+        string filePath = Path.Join(MovieModel.BASE_PATH, createUpdateMovieDTO.File?.FileName);
+
+        using (FileStream fileStream = new FileStream(filePath, FileMode.Create)) {
+            await movieFile.CopyToAsync(fileStream);
+        }
+
+        var fileURI = new Uri(MovieModel.BASE_URI + filePath);
+
+        var newMovie = mapper.Map<MovieModel>(createUpdateMovieDTO);
+        newMovie.Uri = fileURI.ToString();
+        context.Movies.Update(newMovie);
+
+        await context.SaveChangesAsync();   
+
+        return mapper.Map<GetMovieDTO>(newMovie);
     }
 }
